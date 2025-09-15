@@ -12,7 +12,6 @@ public class VistaPrincipal extends JFrame {
     public VistaPrincipal(Usuario usuario) {
         this.usuario = usuario;
 
-
         setTitle("Vista Principal - Notificaciones UVG");
         setSize(400, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -35,13 +34,12 @@ public class VistaPrincipal extends JFrame {
 
                     switch (opcion) {
                         case "Notificaciones":
-                            abrirNotificaciones();
+                            abrirNotificacionesConLoginMock();
                             break;
                         case "Sugerencias":
                             capturarYEnviarSugerencia();
                             break;
                         case "Canales":
-                        
                             mostrarMensaje("Gestión de canales: en construcción.");
                             break;
                         case "Calendario":
@@ -79,18 +77,29 @@ public class VistaPrincipal extends JFrame {
         return JOptionPane.showInputDialog(this, mensaje);
     }
 
-   
-    private void abrirNotificaciones() {
-        JFrame frame = new JFrame("Mis Notificaciones");
+  //Login
+    private void abrirNotificacionesConLoginMock() {
+        String usuarioInput = capturarEntrada("Usuario:");
+        if (usuarioInput == null) return;
+        String contrasenaInput = capturarEntrada("Contraseña:");
+        if (contrasenaInput == null) return;
+
+        // Creamos usuario temporal con 3 mensajes falsos
+        Usuario usuarioMock = new Usuario(usuarioInput, usuarioInput + "@uvg.edu", contrasenaInput);
+        usuarioMock.addNotificacion(new Notificacion("C-001", "Correo", "Correo 1: Bienvenido a UVG"));
+        usuarioMock.addNotificacion(new Notificacion("C-002", "Correo", "Correo 2: Tienes una tarea pendiente"));
+        usuarioMock.addNotificacion(new Notificacion("C-003", "Correo", "Correo 3: Reunión el viernes a las 10am"));
+
+        // Mostramos la ventana de notificaciones
+        JFrame frame = new JFrame("Mis Notificaciones - " + usuarioMock.getNombre());
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(500, 400);
         frame.setLocationRelativeTo(this);
 
-        VistaNotificaciones panelNotis = new VistaNotificaciones(usuario.getNotificaciones());
+        VistaNotificaciones panelNotis = new VistaNotificaciones(usuarioMock.getNotificaciones());
         frame.add(panelNotis);
         frame.setVisible(true);
     }
-
 
     private void capturarYEnviarSugerencia() {
         String sug = capturarEntrada("Escribe tu sugerencia:");
@@ -101,7 +110,6 @@ public class VistaPrincipal extends JFrame {
             mostrarError("La sugerencia no puede estar vacía.");
         }
     }
-
 
     public static void main(String[] args) {
         Usuario demo = new Usuario("Usuario Demo", "demo@uvg.edu", "1234");
