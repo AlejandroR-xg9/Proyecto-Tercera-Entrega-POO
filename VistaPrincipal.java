@@ -6,27 +6,24 @@ import java.util.Arrays;
 import java.util.List;
 
 public class VistaPrincipal extends JFrame {
-    private String usuarioActual;
+    private Usuario usuario;
     private List<String> menuOpciones = Arrays.asList("Canales", "Notificaciones", "Calendario", "Sugerencias", "Salir");
 
-    public VistaPrincipal(String usuario) {
-        this.usuarioActual = usuario;
+    public VistaPrincipal(Usuario usuario) {
+        this.usuario = usuario;
 
-        // Configuración básica de la ventana
+
         setTitle("Vista Principal - Notificaciones UVG");
         setSize(400, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        
         JPanel panel = new JPanel(new BorderLayout());
 
-        
-        JLabel lblUsuario = new JLabel("Bienvenido, " + usuarioActual, SwingConstants.CENTER);
+        JLabel lblUsuario = new JLabel("Bienvenido, " + usuario.getNombre(), SwingConstants.CENTER);
         lblUsuario.setFont(new Font("Arial", Font.BOLD, 16));
         panel.add(lblUsuario, BorderLayout.NORTH);
 
-        
         JPanel menuPanel = new JPanel(new GridLayout(menuOpciones.size(), 1, 10, 10));
 
         for (String opcion : menuOpciones) {
@@ -35,8 +32,26 @@ public class VistaPrincipal extends JFrame {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     mostrarMensaje("Seleccionaste: " + opcion);
-                    if (opcion.equals("Salir")) {
-                        System.exit(0);
+
+                    switch (opcion) {
+                        case "Notificaciones":
+                            abrirNotificaciones();
+                            break;
+                        case "Sugerencias":
+                            capturarYEnviarSugerencia();
+                            break;
+                        case "Canales":
+                        
+                            mostrarMensaje("Gestión de canales: en construcción.");
+                            break;
+                        case "Calendario":
+                            mostrarMensaje("Calendario: en construcción.");
+                            break;
+                        case "Salir":
+                            System.exit(0);
+                            break;
+                        default:
+                            break;
                     }
                 }
             });
@@ -48,7 +63,6 @@ public class VistaPrincipal extends JFrame {
         add(panel);
     }
 
-    
     public void mostrarMenu() {
         setVisible(true);
     }
@@ -65,9 +79,37 @@ public class VistaPrincipal extends JFrame {
         return JOptionPane.showInputDialog(this, mensaje);
     }
 
-    
+   
+    private void abrirNotificaciones() {
+        JFrame frame = new JFrame("Mis Notificaciones");
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setSize(500, 400);
+        frame.setLocationRelativeTo(this);
+
+        VistaNotificaciones panelNotis = new VistaNotificaciones(usuario.getNotificaciones());
+        frame.add(panelNotis);
+        frame.setVisible(true);
+    }
+
+
+    private void capturarYEnviarSugerencia() {
+        String sug = capturarEntrada("Escribe tu sugerencia:");
+        if (sug != null && !sug.trim().isEmpty()) {
+            usuario.enviarSugerencia(sug.trim());
+            mostrarMensaje("¡Gracias! Sugerencia enviada.");
+        } else {
+            mostrarError("La sugerencia no puede estar vacía.");
+        }
+    }
+
+
     public static void main(String[] args) {
-        VistaPrincipal vista = new VistaPrincipal("Usuario Demo");
+        Usuario demo = new Usuario("Usuario Demo", "demo@uvg.edu", "1234");
+
+        demo.addNotificacion(new Notificacion("N-001", "General", "Bienvenido a la plataforma"));
+        demo.addNotificacion(new Notificacion("N-002", "Eventos", "Charla de innovación el viernes"));
+
+        VistaPrincipal vista = new VistaPrincipal(demo);
         vista.mostrarMenu();
     }
 }
