@@ -40,10 +40,10 @@ public class VistaPrincipal extends JFrame {
                             capturarYEnviarSugerencia();
                             break;
                         case "Canales":
-                            mostrarMensaje("Gestión de canales: en construcción.");
+                            mostrarMensaje("Gestión de canales:");
                             break;
                         case "Calendario":
-                            mostrarMensaje("Calendario: en construcción.");
+                            abrirCalendario();
                             break;
                         case "Salir":
                             System.exit(0);
@@ -72,7 +72,17 @@ public class VistaPrincipal extends JFrame {
     public void mostrarError(String error) {
         JOptionPane.showMessageDialog(this, "ERROR: " + error, "Error", JOptionPane.ERROR_MESSAGE);
     }
+    
+private void abrirCalendario() {
+    JFrame frame = new JFrame("Calendario");
+    frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    frame.setSize(500, 400);
+    frame.setLocationRelativeTo(this);
 
+    Calendario panelCalendario = new Calendario();
+    frame.add(panelCalendario);
+    frame.setVisible(true);
+}
     public String capturarEntrada(String mensaje) {
         return JOptionPane.showInputDialog(this, mensaje);
     }
