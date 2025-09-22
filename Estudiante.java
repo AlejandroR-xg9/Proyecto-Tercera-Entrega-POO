@@ -14,7 +14,11 @@ public class Estudiante extends Usuario{
     public void agregarFiltro(String filtro){
         notificacionesFiltros.add(filtro);
     }
+
+    public void desuscribirCanal(Canal canal){
+    canales.remove(canales.indexOf(canal));
+    }
     public void eliminarCanal(String filtro){
-        notificacionesFiltros.remove(notificacionesFiltros.indexof(filtro));
+        notificacionesFiltros.remove(notificacionesFiltros.indexOf(filtro));
     }
 }
