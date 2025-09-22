@@ -40,7 +40,7 @@ public class VistaPrincipal extends JFrame {
                             capturarYEnviarSugerencia();
                             break;
                         case "Canales":
-                            mostrarMensaje("Gestión de canales:");
+                            abrirVistaCanales(); // <<--- NUEVO
                             break;
                         case "Calendario":
                             abrirCalendario();
@@ -72,35 +72,35 @@ public class VistaPrincipal extends JFrame {
     public void mostrarError(String error) {
         JOptionPane.showMessageDialog(this, "ERROR: " + error, "Error", JOptionPane.ERROR_MESSAGE);
     }
-    
-private void abrirCalendario() {
-    JFrame frame = new JFrame("Calendario");
-    frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-    frame.setSize(500, 400);
-    frame.setLocationRelativeTo(this);
 
-    Calendario panelCalendario = new Calendario();
-    frame.add(panelCalendario);
-    frame.setVisible(true);
-}
+    private void abrirCalendario() {
+        JFrame frame = new JFrame("Calendario");
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setSize(500, 400);
+        frame.setLocationRelativeTo(this);
+
+        Calendario panelCalendario = new Calendario();
+        frame.add(panelCalendario);
+        frame.setVisible(true);
+    }
+
     public String capturarEntrada(String mensaje) {
         return JOptionPane.showInputDialog(this, mensaje);
     }
 
-  //Login
+    //Login
     private void abrirNotificacionesConLoginMock() {
         String usuarioInput = capturarEntrada("Usuario:");
         if (usuarioInput == null) return;
         String contrasenaInput = capturarEntrada("Contraseña:");
         if (contrasenaInput == null) return;
 
-        // Creamos usuario temporal con 3 mensajes falsos
+        // Usuario temporal con 3 mensajes falsos
         Usuario usuarioMock = new Usuario(usuarioInput, usuarioInput + "@uvg.edu", contrasenaInput);
         usuarioMock.addNotificacion(new Notificacion("C-001", "Correo", "Correo 1: Bienvenido a UVG"));
         usuarioMock.addNotificacion(new Notificacion("C-002", "Correo", "Correo 2: Tienes una tarea pendiente"));
         usuarioMock.addNotificacion(new Notificacion("C-003", "Correo", "Correo 3: Reunión el viernes a las 10am"));
 
-        // Mostramos la ventana de notificaciones
         JFrame frame = new JFrame("Mis Notificaciones - " + usuarioMock.getNombre());
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(500, 400);
@@ -119,6 +119,11 @@ private void abrirCalendario() {
         } else {
             mostrarError("La sugerencia no puede estar vacía.");
         }
+    }
+
+    // ===== NUEVO: abrir vista de canales =====
+    private void abrirVistaCanales() {
+        VistaCanales.abrirEnFrame(this);
     }
 
     public static void main(String[] args) {
