@@ -1,20 +1,17 @@
 import java.util.ArrayList;
 public class Administrador extends Usuario{
-    public ArrayList<Sugerencias> sugerencias = new ArrayList<Sugerencias>(); 
-    public ArrayList<String> permisos = new ArrayList<String>();
+    public ArrayList<ModeloCanal> sugerencias = new ArrayList<>(); 
+    public ArrayList<String> permisos = new ArrayList<>();
     public Administrador(String nombre, String usuario, String contrasena){
         super(nombre, usuario, contrasena);
     }
-    public Canal crearCanal(String nombre, String tipo){
-        return new Canal(nombre, tipo);
+    public ModeloCanal crearCanal(String nombre, String tipo){
+        return new ModeloCanal(nombre, tipo);
     }
-    public void publicarMensaje(Canal canal, Mensaje mensaje){
-        canal.mostrarMensaje(mensaje); //Tentativo
-    }
-    public ArrayList<Sugerencias> revisarSugerencias(){
+    public ArrayList<ModeloCanal> revisarSugerencias(){
         return sugerencias;
     }
-    public void aceptarSugerencias(Sugerencia sugerencia){
+    public void aceptarSugerencias(ModeloCanal sugerencia){
         sugerencias.add(sugerencia);
     }
 }
