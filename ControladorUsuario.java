@@ -1,57 +1,41 @@
+import javax.swing.*;
 import java.util.List;
 
 public class ControladorUsuario {
     private Usuario usuario;
     private VistaPrincipal vistaPrincipal;
-    private VistaNotificaciones vistaNotificaciones;
 
-    // Constructor que recibe el modelo (Usuario) y las vistas
-    public ControladorUsuario(Usuario usuario, VistaPrincipal vistaPrincipal, VistaNotificaciones vistaNotificaciones) {
+    public ControladorUsuario(Usuario usuario, VistaPrincipal vistaPrincipal) {
         this.usuario = usuario;
         this.vistaPrincipal = vistaPrincipal;
-        this.vistaNotificaciones = vistaNotificaciones;
     }
 
-    // Iniciar sesión
     public boolean iniciarSesion(String correo, String contrasena) {
-        boolean acceso = usuario.iniciarSesion(correo, contrasena);
-        if (acceso) {
+        Usuario u = Usuario.buscarPorCorreo(correo);
+        if (u != null && u.getContrasena().equals(contrasena)) {
+            this.usuario = u;
             vistaPrincipal.mostrarMensaje("Inicio de sesión exitoso");
+            return true;
         } else {
             vistaPrincipal.mostrarError("Credenciales inválidas");
+            return false;
         }
-        return acceso;
     }
 
-    // Cambiar contraseña
-    public void cambiarContrasena(String nuevaContrasena) {
-        if (usuario.cambiarContrasena(nuevaContrasena)) {
+    public void cambiarContrasena(String nueva) {
+        if (usuario.actualizarContrasena(nueva)) {
             vistaPrincipal.mostrarMensaje("Contraseña actualizada");
         } else {
-            vistaPrincipal.mostrarError("La nueva contraseña no puede ser igual a la anterior");
+            vistaPrincipal.mostrarError("No se pudo actualizar la contraseña");
         }
     }
 
-    // Mostrar notificaciones del usuario en la vista
-    public void mostrarNotificaciones() {
-        List<Notificacion> notificaciones = usuario.getNotificaciones();
-        vistaNotificaciones = new VistaNotificaciones(notificaciones);
+    public List<Notificacion> obtenerNotificaciones() {
+        return usuario.getNotificaciones();
     }
 
-    // Enviar sugerencia
-    public void enviarSugerencia(String sugerencia) {
-        usuario.enviarSugerencia(sugerencia);
-        vistaPrincipal.mostrarMensaje("Sugerencia enviada correctamente");
-    }
-
-    // Métodos extra: agregar y eliminar notificaciones
-    public void agregarNotificacion(Notificacion noti) {
-        usuario.addNotificacion(noti);
-        vistaPrincipal.mostrarMensaje("Nueva notificación recibida");
-    }
-
-    public void eliminarNotificacion(Notificacion noti) {
-        usuario.delNotificacion(noti);
-        vistaPrincipal.mostrarMensaje("Notificación eliminada");
+    public void enviarSugerencia(String texto) {
+        usuario.enviarSugerencia(texto);
+        vistaPrincipal.mostrarMensaje("Sugerencia enviada");
     }
 }

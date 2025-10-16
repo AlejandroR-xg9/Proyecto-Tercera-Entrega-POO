@@ -2,23 +2,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ControladorNotificaciones {
-    private String usuarioActual;
+    private int usuarioActualId;
     private List<Notificacion> notificaciones;
 
-    public ControladorNotificaciones() {
-        // Mensajes de ejemplo
+    public ControladorNotificaciones(int usuarioActualId) {
+        this.usuarioActualId = usuarioActualId;
+        // Crear lista de notificaciones de ejemplo
         notificaciones = new ArrayList<>();
-        notificaciones.add(new Notificacion("C-001", "Correo", "Correo 1: Bienvenido a UVG"));
-        notificaciones.add(new Notificacion("C-002", "Correo", "Correo 2: Tienes una tarea pendiente"));
-        notificaciones.add(new Notificacion("C-003", "Correo", "Correo 3: Reunión el viernes a las 10am"));
+        notificaciones.add(new Notificacion("Correo", "Correo 1: Bienvenido a UVG", usuarioActualId));
+        notificaciones.add(new Notificacion("Correo", "Correo 2: Tienes una tarea pendiente", usuarioActualId));
+        notificaciones.add(new Notificacion("Correo", "Correo 3: Reunión el viernes a las 10am", usuarioActualId));
     }
 
-    public String getUsuarioActual() {
-        return usuarioActual;
+    public int getUsuarioActualId() {
+        return usuarioActualId;
     }
 
-    // Devuelve las notificaciones
     public List<Notificacion> getNotificaciones() {
         return notificaciones;
     }
+
+    public void agregarNotificacion(Notificacion noti) {
+        if (noti != null) {
+            notificaciones.add(noti);
+        }
+    }
+
+    public void eliminarNotificacion(Notificacion noti) {
+        notificaciones.remove(noti);
+    }
 }
+
+

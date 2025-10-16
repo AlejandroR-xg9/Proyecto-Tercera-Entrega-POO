@@ -4,59 +4,50 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class VistaNotificaciones extends JPanel {
-
-    private List<Notificacion> notificacionesUsuario;
+    private java.util.List<Notificacion> notificacionesUsuario;
     private DefaultListModel<String> notificacionesModel;
     private JList<String> notificacionesList;
     private JTextField filtroTextField;
     private JButton filtrarButton;
 
-    public VistaNotificaciones(List<Notificacion> notificacionesUsuario) {
+    public VistaNotificaciones(java.util.List<Notificacion> notificacionesUsuario) {
         this.notificacionesUsuario = notificacionesUsuario;
-        setLayout(new BorderLayout(10, 10));
+        setLayout(new BorderLayout(10,10));
 
-        JLabel tituloLabel = new JLabel("Mis Notificaciones", SwingConstants.CENTER);
-        tituloLabel.setFont(new Font("Arial", Font.BOLD, 18));
-        add(tituloLabel, BorderLayout.NORTH);
+        JLabel titulo = new JLabel("Mis Notificaciones", SwingConstants.CENTER);
+        titulo.setFont(new Font("Arial", Font.BOLD, 18));
+        add(titulo, BorderLayout.NORTH);
 
-        JPanel filtroPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JPanel filtro = new JPanel(new FlowLayout(FlowLayout.LEFT));
         filtroTextField = new JTextField(20);
         filtrarButton = new JButton("Filtrar");
+        filtro.add(new JLabel("Filtro por palabra clave:")); filtro.add(filtroTextField); filtro.add(filtrarButton);
+        add(filtro, BorderLayout.SOUTH);
+
+        notificacionesModel = new DefaultListModel<>();
+        notificacionesList = new JList<>(notificacionesModel);
+        add(new JScrollPane(notificacionesList), BorderLayout.CENTER);
 
         filtrarButton.addActionListener(e -> aplicarFiltro());
         filtroTextField.addActionListener(e -> aplicarFiltro());
 
-        filtroPanel.add(new JLabel("Filtro por palabra clave:"));
-        filtroPanel.add(filtroTextField);
-        filtroPanel.add(filtrarButton);
-        add(filtroPanel, BorderLayout.SOUTH);
-
-        notificacionesModel = new DefaultListModel<>();
-        notificacionesList = new JList<>(notificacionesModel);
-        JScrollPane scrollPane = new JScrollPane(notificacionesList);
-        add(scrollPane, BorderLayout.CENTER);
-
         cargarNotificaciones(notificacionesUsuario);
     }
 
-    private void cargarNotificaciones(List<Notificacion> notificaciones) {
+    private void cargarNotificaciones(java.util.List<Notificacion> notis) {
         notificacionesModel.clear();
-        if (notificaciones.isEmpty()) {
+        if (notis == null || notis.isEmpty()) {
             notificacionesModel.addElement("No hay notificaciones disponibles para mostrar.");
             return;
         }
-        for (Notificacion noti : notificaciones) {
-            notificacionesModel.addElement(noti.toString());
-        }
+        for (Notificacion n : notis) notificacionesModel.addElement(n.toString());
     }
 
     private void aplicarFiltro() {
-        String filtro = filtroTextField.getText().toLowerCase();
-        
-        List<Notificacion> notificacionesFiltradas = notificacionesUsuario.stream()
-            .filter(n -> n.contienePalabraClave(filtro))
-            .collect(Collectors.toList());
-
-        cargarNotificaciones(notificacionesFiltradas);
+        String f = filtroTextField.getText();
+        java.util.List<Notificacion> filtradas = notificacionesUsuario.stream()
+                .filter(n -> n.contienePalabraClave(f))
+                .collect(Collectors.toList());
+        cargarNotificaciones(filtradas);
     }
 }
