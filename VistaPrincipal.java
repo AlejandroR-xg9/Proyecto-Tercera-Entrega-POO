@@ -42,7 +42,11 @@ public class VistaPrincipal extends JFrame {
                 abrirCalendario();
                 break;
             case "Sugerencias":
-                capturarYEnviarSugerencia();
+                if (usuario instanceof Administrador) {
+                    VistaSugerencias.abrirEnFrame(this);
+                } else {
+                    capturarYEnviarSugerencia();
+                }
                 break;
             case "Salir":
                 System.exit(0);
