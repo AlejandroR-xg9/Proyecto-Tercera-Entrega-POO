@@ -96,5 +96,6 @@ public class Notificacion {
     public String getTexto() { return texto; }
     public int getUsuarioId() { return usuarioId; }
     public void setUsuarioId(int usuarioId) { this.usuarioId = usuarioId; }
+    public Timestamp getFecha() { return fecha; }
 }
 

@@ -1,29 +1,35 @@
-import javax.swing.*;
-import javax.swing.table.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import javax.swing.*;
+import javax.swing.table.*;
 
 public class Calendario extends JPanel {
     private JTable tablaCalendario;
     private JLabel lblMes;
     private Map<Integer, String> eventosPorDia;
     private LocalDate fechaActual;
+    private int usuarioId;
 
-    public Calendario() {
+    public Calendario(int usuarioId) {
+        this.usuarioId = usuarioId;
         setLayout(new BorderLayout(10, 10));
 
         fechaActual = LocalDate.now();
         YearMonth yearMonth = YearMonth.of(fechaActual.getYear(), fechaActual.getMonth());
 
         eventosPorDia = new HashMap<>();
-        eventosPorDia.put(5, "Entrega de proyecto");
-        eventosPorDia.put(10, "Examen parcial");
-        eventosPorDia.put(21, "Reunión de equipo");
+        eventosPorDia.put(5, "Notificación simulada");
+        eventosPorDia.put(12, "Mensaje de prueba");
+        eventosPorDia.put(25, "Evento falso para debug");
+        cargarNotificaciones();
+
 
         lblMes = new JLabel(fechaActual.getMonth() + " " + fechaActual.getYear(), SwingConstants.CENTER);
         lblMes.setFont(new Font("Arial", Font.BOLD, 18));
@@ -46,25 +52,23 @@ public class Calendario extends JPanel {
         tablaCalendario.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value,
-                                                        boolean isSelected, boolean hasFocus,
-                                                        int row, int column) {
+                                                          boolean isSelected, boolean hasFocus,
+                                                          int row, int column) {
                 Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
                 setHorizontalAlignment(SwingConstants.CENTER);
 
                 if (value instanceof Integer) {
                     int dia = (Integer) value;
 
-                    
                     if (dia == fechaActual.getDayOfMonth()) {
                         c.setBackground(new Color(173, 216, 230)); // celeste
                     } else {
                         c.setBackground(Color.WHITE);
                     }
 
-                    
                     if (eventosPorDia.containsKey(dia)) {
                         c.setForeground(Color.RED);
-                        setToolTipText(eventosPorDia.get(dia));
+                        setToolTipText(eventosPorDia.get(dia)); // Muestra texto de la notificación
                     } else {
                         c.setForeground(Color.BLACK);
                         setToolTipText(null);
@@ -78,21 +82,20 @@ public class Calendario extends JPanel {
             }
         });
 
-        
+        // Acción al hacer clic
         tablaCalendario.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 int fila = tablaCalendario.rowAtPoint(e.getPoint());
                 int columna = tablaCalendario.columnAtPoint(e.getPoint());
-
                 Object valor = tablaCalendario.getValueAt(fila, columna);
+
                 if (valor instanceof Integer) {
                     int dia = (Integer) valor;
                     if (eventosPorDia.containsKey(dia)) {
-                        // Mostrar mensaje asociado al día
                         JOptionPane.showMessageDialog(Calendario.this,
-                                "Evento para el día " + dia + ": " + eventosPorDia.get(dia),
-                                "Detalle de Evento",
+                                "Notificación del día " + dia + ":\n" + eventosPorDia.get(dia),
+                                "Detalle de Notificación",
                                 JOptionPane.INFORMATION_MESSAGE);
                     }
                 }
@@ -126,6 +129,21 @@ public class Calendario extends JPanel {
                 fila[i] = dia++;
             }
             modelo.addRow(fila);
+        }
+    }
+
+    // 🔹 Nuevo método: carga las notificaciones desde la base de datos
+    private void cargarNotificaciones() {
+        List<Notificacion> notificaciones = Notificacion.obtenerPorUsuario(usuarioId);
+        for (Notificacion n : notificaciones) {
+            Timestamp ts = n.getFecha();
+            if (ts != null) {
+                LocalDate fechaNoti = ts.toLocalDateTime().toLocalDate();
+                if (fechaNoti.getMonth() == fechaActual.getMonth() &&
+                    fechaNoti.getYear() == fechaActual.getYear()) {
+                    eventosPorDia.put(fechaNoti.getDayOfMonth(), n.getTexto());
+                }
+            }
         }
     }
 }
