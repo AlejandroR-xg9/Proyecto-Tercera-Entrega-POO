@@ -48,7 +48,6 @@ public class Calendario extends JPanel {
         tablaCalendario.getTableHeader().setReorderingAllowed(false);
         tablaCalendario.getTableHeader().setResizingAllowed(false);
 
-        // Renderer para pintar los días
         tablaCalendario.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value,
@@ -82,7 +81,6 @@ public class Calendario extends JPanel {
             }
         });
 
-        // Acción al hacer clic
         tablaCalendario.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -132,7 +130,6 @@ public class Calendario extends JPanel {
         }
     }
 
-    // 🔹 Nuevo método: carga las notificaciones desde la base de datos
     private void cargarNotificaciones() {
         List<Notificacion> notificaciones = Notificacion.obtenerPorUsuario(usuarioId);
         for (Notificacion n : notificaciones) {
